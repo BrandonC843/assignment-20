@@ -1,10 +1,31 @@
-body {
-  background: purple; }
+* {
+  box-sizing: border-box; }
 
-h2 {
-  color: red; }
+body {
+  background-image: url(http://www.johnsiskandson.com/sites/default/files/project/196/gallery-425.jpg);
+  background-size: cover; }
+
+.page-content {
+  margin: 30px; }
+
+.panel {
+  border: none;
+  text-align: center; }
 
 h3 {
-  color: green; }
+  margin-bottom: 20px;
+  font-size: medium;
+  color: black; }
+
+.panel-body {
+  background-color: darkred;
+  margin-right: auto; }
+
+.thumbnail-container {
+  height: 450px;
+  margin-bottom: 20px; }
+
+.thumbnail {
+  background-color: red; }
 
 /*# sourceMappingURL=styles.css.map*/

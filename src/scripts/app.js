@@ -1,38 +1,70 @@
-// console.log('wowow')
-// import $ from 'jquery';
-//
-// $.getJSON('/proxy?api=http://www.bbc.co.uk/radio1/playlist.json').then(function(serverRes){
-// 	console.log(serverRes)
-// })
-const BbcRadio1Model = Backbone.Model.extend({
+// ///////importing the templates and nav bar click.evt///////////
+import $ from 'jquery';
+import {radioCollection, radioModel} from './models/models.js'
+import {playlistTemplate, homeTemplate} from './templates/templates.js'
+
+// function forEach(arr, cb){
+//   for (var i = 0; i < arr.length; i++) {
+//     cb(arr[i], i, arr)}
+// becuase of the seperator this isnt needed!!!!
+// no need for previous forEach function because of the [...],
+ // able to iterate over with its own forEach
+
+const AppRouter = Backbone.Router.extend({
+  initialize: function(){
+            let buttonEl = document.querySelectorAll('nav button');
+            let buttonElArray = [...buttonEl];
+
+      buttonElArray.forEach(function(domEl, i){
+         console.log(i);
+         domEl.addEventListener('click', function(evt){
+
+            var clickedButton = evt.target;
+            var activeRoute = clickedButton.dataset.route;
+            window.location.hash = activeRoute
+         })
+      })
+   Backbone.history.start()
+  },
+
+	routes : {
+		'radio2' : 'renderRadio2',
+		'radio1' : 'renderRadio1',
+		'' : 'renderHome'
+	},
+// ////////home route//////////
+	renderHome: function(homeRoute){
+		let bbcRadioModel = new radioModel({singleFetch: true})
+		bbcRadioModel.fetch().then(function(serverRes){
+			console.log(bbcRadioModel);
+			let bigHTMLStr = homeTemplate(bbcRadioModel, 'root', {})
+			document.querySelector('.row').innerHTML = bigHTMLStr
+		})
+
+	},
+   // /////////playlist 1//////////
+	renderRadio1: function(radioRoute){
+		let bbcRadioColl = new radioCollection(1)
+		bbcRadioColl.fetch().then(function(serverRes){
+			console.log(bbcRadioColl);
+			let playlistModelsList = bbcRadioColl.models
+			let bigHTMLStr = playlistTemplate(playlistModelsList, 'root', {})
+			document.querySelector('.row').innerHTML = bigHTMLStr
+		})
+
+	},
+// ///////playlist 2////////////
+	renderRadio2: function(radioRoute){
+		let bbcRadioColl = new radioCollection(2)
+		bbcRadioColl.fetch().then(function(serverRes){
+         // console.log(serverRes);
+			let playlistModelsList = bbcRadioColl.models
+			let bigHTMLStr = playlistTemplate(playlistModelsList, 'root', {})
+			document.querySelector('.row').innerHTML = bigHTMLStr
+		})
+
+	},
+
 })
-
-const BbcRadioCollection = Backbone.Collection.extend({
-   intitalize: function(qryStrParams){
-      if(typeof qryStrParams !== 'undefined'){
-         this.url = `${this.url}&${qryStrParams}`
-      }
-   },
-   parse: function(rawServerRes){
-      console.log('current Parsing');
-      return serverRes.results
-   },
-
-   url: '/proxy?api=http://www.bbc.co.uk/radio1/playlist.json'
-
-      model: BbcRadio1Model
-})
-// const AppRouter = Backbone.Router.extend({
-// 	initialize: function(){
-// 		console.log('app routing');
-// 		Backbone.history.start()
-// 	},
-   routes: {
-      '' : 'homePage',
-      '#radio/1' : 'radio',
-      '#radio/2' : 'radio'
-
-
-   }
 
    const myApp = new AppRouter()
